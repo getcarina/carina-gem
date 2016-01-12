@@ -1,0 +1,172 @@
+source $PWD/carina/config
+eval $(carina env $CARINA_CLUSTER)
+
+# -------------------
+# UTILS
+# -------------------
+delete_if_exists() {
+  exists=`docker inspect $1`
+  if [ ! -z "$exists" ]; then
+    docker rm -f $1
+  fi
+}
+
+find_or_create_dvc() {
+  name=$1
+  path=$2
+  image=$3
+  exists=`docker inspect $1`
+
+  if [ -z "$exists" ]; then
+    docker create --name $name --volume $path $image
+  fi
+}
+
+
+# -------------------
+# POSTGRESQL
+# -------------------
+
+build_postgres() {
+  find_or_create_dvc "pgdata" "/var/lib/postgresql/data" "postgres"
+  delete_if_exists "postgres"
+
+  docker run \
+    -d \
+    --name postgres \
+    -e POSTGRES_USER=$POSTGRES_USER \
+    -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+    --volumes-from pgdata \
+    postgres
+}
+
+
+# -------------------
+# ELASTICSEARCH
+# -------------------
+
+build_elasticsearch() {
+  find_or_create_dvc "esdata" "/usr/share/elasticsearch/data" "elasticsearch"
+  delete_if_exists "es"
+
+  docker run \
+    -d \
+    --name es \
+    -p 9200:9200 \
+    --volumes-from esdata \
+    elasticsearch
+}
+
+
+# -------------------
+# LOGSTASH
+# -------------------
+
+build_logstash() {
+  delete_if_exists "logstash"
+
+  LOGSTASH=$(echo `cat $PWD/carina/logstash.conf`|tr -d '\n')
+  docker run \
+    -d \
+    --name logstash \
+    --link es:elasticsearch \
+    -p 5000:5000 \
+    -p 12201:12201/udp \
+    -p 5228:5228/udp \
+    logstash logstash -e "$LOGSTASH"
+}
+
+
+# -------------------
+# KIBANA
+# -------------------
+
+build_kibana() {
+  delete_if_exists "kibana"
+
+  docker run \
+    -d \
+    -p 5601:5601 \
+    --name kibana \
+    --link es:elasticsearch \
+    kibana
+}
+
+
+# -------------------
+# INTERLOCK
+# -------------------
+build_interlock() {
+  find_or_create_dvc "interlockdata" "/ssl" "ehazlett/interlock"
+
+  # docker cp carina/ssl_certs/* interlockdata:/ssl
+
+  delete_if_exists "interlock"
+
+  docker run -d \
+    --name interlock \
+    -p 80:80 \
+    --volumes-from swarm-data \
+    --volumes-from interlockdata \
+    ehazlett/interlock \
+    --debug \
+    --swarm-url $DOCKER_HOST \
+    --swarm-tls-ca-cert=/etc/docker/ca.pem  \
+    --swarm-tls-cert=/etc/docker/server-cert.pem \
+    --swarm-tls-key=/etc/docker/server-key.pem \
+    --plugin haproxy start
+}
+
+
+# -------------------
+# APP
+# -------------------
+
+build_image() {
+  docker build -t my-app .
+}
+
+build_deploy() {
+  for i in $(eval echo "{1..$SCALE}")
+  do
+    delete_if_exists "rails-${i}"
+
+    docker run \
+      -d \
+      -p :3000 \
+      --name rails-${i} \
+      --link postgres:db \
+      --link logstash:logstash \
+      --hostname $DOMAIN \
+      -e POSTGRES_PASSWORD=$POSTGRES_PASSWORD \
+      -e POSTGRES_USER=$POSTGRES_USER \
+      -e RAILS_ENV=$RAILS_ENV \
+      -e RACK_ENV=$RACK_ENV \
+      -e LOG_LEVEL=$LOG_LEVEL \
+      -e RAILS_SERVE_STATIC_FILES=$RAILS_SERVE_STATIC_FILES \
+      -e SECRET_KEY_BASE=$SECRET_KEY_BASE \
+      -e INTERLOCK_DATA='{"port": 3000, "warm": true}' \
+      -t my-app
+  done
+}
+
+
+# -------------------
+# DB SETUP
+# -------------------
+
+build_db_setup() {
+  docker exec -it rails-1 rake db:setup
+}
+
+
+build_all() {
+  build_postgres
+  build_elasticsearch
+  build_logstash
+  build_kibana
+  build_interlock
+  build_image
+  build_deploy
+  build_db_setup
+}

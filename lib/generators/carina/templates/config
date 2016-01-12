@@ -1,0 +1,19 @@
+# Carina config
+export CARINA_APIKEY='' # Rackspace API key
+export CARINA_USERNAME='' # Rackspace username
+export CARINA_CLUSTER='' # This is the name of the Carina cluster to use.
+
+# Infrastructure config
+export DOMAIN='' # This is the domain name you're deploying
+export SCALE=3 # How many application containers you'd like to run (2 or 3 per core)
+
+# Database config
+export POSTGRES_PASSWORD='' # Postgresql password of choice
+export POSTGRES_USER='postgres' # Postgresql user of choice
+
+# Rails config
+export LANG=en_US.UTF-8 # Default language for the application
+export RAILS_ENV=production # Which RAILS_ENV to run under
+export RACK_ENV=production # Which Rack ENV to run under
+export RAILS_SERVE_STATIC_FILES=true # Ask Rails to serve static assets (images, css, js)
+export SECRET_KEY_BASE='' # The secret key base of choice for your Rails application

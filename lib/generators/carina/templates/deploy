@@ -1,0 +1,75 @@
+#!/usr/bin/env ruby
+
+# TODO: Get host IP from the interlock container specifically (`docker port interlock`)
+
+require "thor"
+
+class MyThorCommand < Thor
+
+  desc "bootstrap", "?"
+  def bootstrap
+    puts "Bootstrapping cluster (idempotently)"
+    system "source carina/build; build_all"
+    invoke :info
+  end
+
+  desc "info", "?"
+  def info
+    ip = `echo $DOCKER_HOST | awk '{print substr($0,1,length($0)-5)}' | awk '{print substr($0,7,length($0))}'`
+    puts `docker ps`
+    puts "\n\nNow available on #{ip}"
+  end
+
+  desc "db_setup", "?"
+  def db_setup
+    puts "Setting up DB"
+    system "source carina/build; build_db_setup"
+  end
+
+  desc "latest", "?"
+  def latest
+    invoke :build_image
+    puts "Deploying image containers"
+    system "source carina/build; build_deploy"
+    invoke :info
+  end
+
+  desc "elasticsearch", "?"
+  def elasticsearch
+    puts "Building Elasticsearch container"
+    system "source carina/build; build_elasticsearch"
+  end
+
+  desc "image", "?"
+  def build_image
+    puts "Building the Rails image"
+    system "source carina/build; build_image"
+  end
+
+  desc "interlock", "?"
+  def interlock
+    puts "Building Interlock container"
+    system "source carina/build; build_interlock"
+  end
+
+  desc "kibana", "?"
+  def kibana
+    puts "Building Kibana container"
+    system "source carina/build; build_kibana"
+  end
+
+  desc "logstash", "?"
+  def logstash
+    puts "Building Logstash container"
+    system "source carina/build; build_logstash"
+  end
+
+  desc "postgres", "?"
+  def postgres
+    puts "Building Postgresql container"
+    system "source carina/build; build_postgres"
+  end
+
+end
+
+MyThorCommand.start
