@@ -1,7 +1,5 @@
 #!/usr/bin/env ruby
 
-# TODO: Get host IP from the interlock container specifically (`docker port interlock`)
-
 require "thor"
 
 class Carina < Thor
@@ -15,7 +13,7 @@ class Carina < Thor
 
   desc "info", "Show the IP and port(s) your application is available"
   def info
-    puts "\n\nNow available on:"
+    puts "\n\n#{ENV['DOMAIN']} is now available on:"
     puts `docker port interlock`
   end
 
