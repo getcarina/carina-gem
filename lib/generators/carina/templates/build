@@ -5,8 +5,8 @@ eval $(carina env $CARINA_CLUSTER)
 # UTILS
 # -------------------
 delete_if_exists() {
-  exists=`docker inspect $1`
-  if [ ! -z "$exists" ]; then
+  exists=$(docker inspect $1 2> /dev/null)
+  if [[ "$exists" != "[]" ]]; then
     docker rm -f $1
   fi
 }
@@ -15,9 +15,10 @@ find_or_create_dvc() {
   name=$1
   path=$2
   image=$3
-  exists=`docker inspect $1`
+  exists=$(docker inspect $1 2> /dev/null)
 
-  if [ -z "$exists" ]; then
+  if [[ "$exists" == "[]" ]]; then
+    echo "Creating ${name} data volume container"
     docker create --name $name --volume $path $image
   fi
 }
