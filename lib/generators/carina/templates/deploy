@@ -4,29 +4,28 @@
 
 require "thor"
 
-class MyThorCommand < Thor
+class Carina < Thor
 
-  desc "bootstrap", "?"
+  desc "bootstrap", "Build everything (idempotent)"
   def bootstrap
     puts "Bootstrapping cluster (idempotently)"
     system "source carina/build; build_all"
     invoke :info
   end
 
-  desc "info", "?"
+  desc "info", "Show the IP and port(s) your application is available"
   def info
-    ip = `echo $DOCKER_HOST | awk '{print substr($0,1,length($0)-5)}' | awk '{print substr($0,7,length($0))}'`
-    puts `docker ps`
-    puts "\n\nNow available on #{ip}"
+    puts "\n\nNow available on:"
+    puts `docker port interlock`
   end
 
-  desc "db_setup", "?"
+  desc "db_setup", "Rebuild, load, migrate and seed the database"
   def db_setup
     puts "Setting up DB"
     system "source carina/build; build_db_setup"
   end
 
-  desc "latest", "?"
+  desc "latest", "Deploy the latest Rails code"
   def latest
     invoke :build_image
     puts "Deploying image containers"
@@ -34,37 +33,37 @@ class MyThorCommand < Thor
     invoke :info
   end
 
-  desc "elasticsearch", "?"
+  desc "elasticsearch", "Rebuild the ElasticSearch container"
   def elasticsearch
     puts "Building Elasticsearch container"
     system "source carina/build; build_elasticsearch"
   end
 
-  desc "image", "?"
+  desc "image", "Rebuild the Rails image with current code"
   def build_image
     puts "Building the Rails image"
     system "source carina/build; build_image"
   end
 
-  desc "interlock", "?"
+  desc "interlock", "Rebuild the Interlock container"
   def interlock
     puts "Building Interlock container"
     system "source carina/build; build_interlock"
   end
 
-  desc "kibana", "?"
+  desc "kibana", "Rebuild the Kibana container"
   def kibana
     puts "Building Kibana container"
     system "source carina/build; build_kibana"
   end
 
-  desc "logstash", "?"
+  desc "logstash", "Rebuild the Logstash container"
   def logstash
     puts "Building Logstash container"
     system "source carina/build; build_logstash"
   end
 
-  desc "postgres", "?"
+  desc "postgres", "Rebuild the Postgresql container"
   def postgres
     puts "Building Postgresql container"
     system "source carina/build; build_postgres"
@@ -72,4 +71,4 @@ class MyThorCommand < Thor
 
 end
 
-MyThorCommand.start
+Carina.start
