@@ -7,7 +7,7 @@ class CarinaBackup < Thor
   desc "postgresql", "Backup Postgresql to file"
   def postgresql
     puts "Backing up Postgresql"
-    system "source carina/build; backup_postgres"
+    system "source carina/lib; backup_postgres"
   end
 
 end

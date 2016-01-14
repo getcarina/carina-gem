@@ -7,64 +7,64 @@ class Carina < Thor
   desc "bootstrap", "Build everything (idempotent)"
   def bootstrap
     puts "Bootstrapping cluster (idempotently)"
-    system "source carina/build; build_all"
+    system "source carina/lib; build_all"
     invoke :info
   end
 
   desc "info", "Show the IP and port(s) your application is available"
   def info
-    puts "\n\n#{ENV['DOMAIN']} is now available on:"
+    puts "\n\n#{ENV['DOMAIN']} is now available via:"
     puts `docker port interlock`
   end
 
   desc "db_setup", "Rebuild, load, migrate and seed the database"
   def db_setup
     puts "Setting up DB"
-    system "source carina/build; build_db_setup"
+    system "source carina/lib; build_db_setup"
   end
 
   desc "latest", "Deploy the latest Rails code"
   def latest
     invoke :build_image
     puts "Deploying image containers"
-    system "source carina/build; build_deploy"
+    system "source carina/lib; build_deploy"
     invoke :info
   end
 
   desc "elasticsearch", "Rebuild the ElasticSearch container"
   def elasticsearch
     puts "Building Elasticsearch container"
-    system "source carina/build; build_elasticsearch"
+    system "source carina/lib; build_elasticsearch"
   end
 
   desc "image", "Rebuild the Rails image with current code"
   def build_image
     puts "Building the Rails image"
-    system "source carina/build; build_image"
+    system "source carina/lib; build_image"
   end
 
   desc "interlock", "Rebuild the Interlock container"
   def interlock
     puts "Building Interlock container"
-    system "source carina/build; build_interlock"
+    system "source carina/lib; build_interlock"
   end
 
   desc "kibana", "Rebuild the Kibana container"
   def kibana
     puts "Building Kibana container"
-    system "source carina/build; build_kibana"
+    system "source carina/lib; build_kibana"
   end
 
   desc "logstash", "Rebuild the Logstash container"
   def logstash
     puts "Building Logstash container"
-    system "source carina/build; build_logstash"
+    system "source carina/lib; build_logstash"
   end
 
   desc "postgres", "Rebuild the Postgresql container"
   def postgres
     puts "Building Postgresql container"
-    system "source carina/build; build_postgres"
+    system "source carina/lib; build_postgres"
   end
 
 end

@@ -5,7 +5,7 @@ class CarinaGenerator < Rails::Generators::NamedBase
     empty_directory "carina"
     empty_directory "carina/ssl"
 
-    copy_file "build", "carina/build"
+    copy_file "lib", "carina/lib"
     copy_file "deploy", "carina/deploy"
     copy_file "config", "carina/config"
     copy_file "backup", "carina/backup"
@@ -13,7 +13,7 @@ class CarinaGenerator < Rails::Generators::NamedBase
     copy_file "puma.rb", "config/puma.rb"
     copy_file "Dockerfile", "Dockerfile"
 
-    chmod "carina/build", 0777
+    chmod "carina/lib", 0777
     chmod "carina/deploy", 0777
     chmod "carina/config", 0777
     chmod "carina/backup", 0777
