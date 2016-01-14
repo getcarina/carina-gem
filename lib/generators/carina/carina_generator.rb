@@ -36,6 +36,17 @@ class CarinaGenerator < Rails::Generators::NamedBase
       gem 'puma'
     }
 
+    db = %q{
+      production:
+        adapter: postgresql
+        encoding: unicode
+        database: <DatabaseName>
+        pool: 5
+        username: <%= ENV['POSTGRES_USER'] %>
+        password: <%= ENV['POSTGRES_PASSWORD'] %>
+        host: db
+    }
+
     puts "\n"
     puts "Please add the following code into config/environments/production.rb:"
     puts prod_log
@@ -43,5 +54,9 @@ class CarinaGenerator < Rails::Generators::NamedBase
     puts "\n"
     puts "Please add the following gems to your Gemfile:"
     puts gems
+
+    puts "\n"
+    puts "Please update config/database.yml:"
+    puts db
   end
 end
