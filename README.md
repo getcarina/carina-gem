@@ -51,9 +51,9 @@ Commands:
 ```  
 
 #### URLs
-* Main site: `http(s):\\<ClusterIP>`
-* Kibana: `http:\\<ClusterIP>:5601`
-* HAProxy: `http:\\<ClusterIP>/haproxy?monitor`
+* Main site: `http(s):\\<Domain>`
+* Kibana: `http:\\<Domain>:5601`
+* HAProxy: `http:\\<Domain>/haproxy?monitor`
 
 #### Caveats
 * This setup requires you access the cluster via domain name. If you're testing locally you can update your `/etc/hosts` file like so: `<ClusterIP> <DomainName>`
