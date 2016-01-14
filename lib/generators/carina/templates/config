@@ -1,6 +1,4 @@
 # Carina config
-export CARINA_APIKEY='' # Rackspace API key
-export CARINA_USERNAME='' # Rackspace username
 export CARINA_CLUSTER='' # This is the name of the Carina cluster to use.
 
 # Infrastructure config
