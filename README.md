@@ -2,28 +2,30 @@
 
 This gem will create and help maintain an average Rails-based application's infrastructure needs on Rackspace's Carina offering ([GetCarina.com](getcarina.com))
 
-Add this to your `Gemfile`: `gem 'carina'`
+#### Install
+Add this to your `Gemfile`:
+`gem 'carina', git: "https://github.com/getcarina/carina-gem.git"`
 
-### Generate
+#### Generate
 `rails g carina install`
 
-### Cluster create
+#### Create Carina cluster (FREE)
 `brew install carina`
 `carina create <ClusterName>`
 
-### Configure
+#### Configure
 `vim carina/config`
 
-### Quickstart
+#### Quickstart
 `./carina/deploy bootstrap`
 
-### Deploying changes
+#### Deploying changes
 `./carina/deploy latest`
 
-### Backing up Postgresql
+#### Backing up Postgresql
 `./carina/backup postgresql`
 
-### All Commands
+#### All Commands
 ```
 ./carina/deploy help
 
@@ -48,10 +50,10 @@ Commands:
   backup postgresql      # Backup Postgresql to file
 ```  
 
-### URLs
+#### URLs
 * Main site: `http(s):\\<ClusterIP>`
 * Kibana: `http:\\<ClusterIP>:5601`
 * HAProxy: `http:\\<ClusterIP>/haproxy?monitor`
 
-### Caveats
+#### Caveats
 * This setup requires you access the cluster via domain name. If you're testing locally you can update your `/etc/hosts` file like so: `<ClusterIP> <DomainName>`
