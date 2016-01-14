@@ -14,7 +14,7 @@ class Carina < Thor
   desc "info", "Show the IP and port(s) your application is available"
   def info
     puts "\n\n#{ENV['DOMAIN']} is now available via:"
-    puts `docker port interlock`
+    puts `source carina/lib; docker port interlock`
   end
 
   desc "db_setup", "Rebuild, load, migrate and seed the database"
