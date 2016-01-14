@@ -1,0 +1,15 @@
+#!/usr/bin/env ruby
+
+require "thor"
+
+class CarinaBackup < Thor
+
+  desc "postgresql", "Backup Postgresql to file"
+  def postgresql
+    puts "Backing up Postgresql"
+    system "source carina/build; backup_postgres"
+  end
+
+end
+
+CarinaBackup.start

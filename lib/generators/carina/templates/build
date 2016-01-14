@@ -41,6 +41,12 @@ build_postgres() {
     postgres
 }
 
+backup_postgres() {
+  docker cp pgdata:/var/lib/postgresql/data pg_backup
+  tar cpjf postgresql-$(date +%Y%m%d%H%M%S).tar.gz pg_backup
+  rm -rf pg_backup
+}
+
 
 # -------------------
 # ELASTICSEARCH

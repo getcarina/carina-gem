@@ -8,6 +8,7 @@ class CarinaGenerator < Rails::Generators::NamedBase
     copy_file "build", "carina/build"
     copy_file "deploy", "carina/deploy"
     copy_file "config", "carina/config"
+    copy_file "backup", "carina/backup"
     copy_file "logstash.conf", "carina/logstash.conf"
     copy_file "puma.rb", "config/puma.rb"
     copy_file "Dockerfile", "Dockerfile"
@@ -15,6 +16,7 @@ class CarinaGenerator < Rails::Generators::NamedBase
     chmod "carina/build", 0777
     chmod "carina/deploy", 0777
     chmod "carina/config", 0777
+    chmod "carina/backup", 0777
 
     prod_log = %q{
       require 'logstash-logger'
