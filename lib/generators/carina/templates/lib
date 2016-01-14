@@ -163,7 +163,10 @@ build_deploy() {
 # -------------------
 
 build_db_setup() {
-  docker exec -it rails-1 -e RAILS_ENV=$RAILS_ENV rake db:setup
+  docker exec \
+  -it rails-1 \
+  -e RAILS_ENV=$RAILS_ENV \
+  rake db:setup
 }
 
 
