@@ -4,7 +4,7 @@ This gem will create and help maintain an average Rails-based application's infr
 
 #### Install
 Add this to your `Gemfile`:
-`gem 'carina', git: "https://github.com/getcarina/carina-gem.git"`
+`gem 'carina'`
 
 #### Generate
 `rails g carina install`
