@@ -1,6 +1,6 @@
 # Carina
 
-This gem will create and help maintain an average Rails-based application's infrastructure needs on Rackspace's Carina offering ([GetCarina.com](getcarina.com))
+This gem will create and help maintain an average Rails-based application's infrastructure needs on Rackspace's Carina offering ([GetCarina.com](https://getcarina.com))
 
 #### Install
 Add this to your `Gemfile`:
